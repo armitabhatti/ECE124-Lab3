@@ -1,0 +1,60 @@
+-- Energy_monitor.vhd
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+-- energy control block DIRECTS hvac to increase or decrease, (depending on outputs from compx4 comparator)
+-- this also includes activating the "run signal"- when current_temp = mux_temp, run is deactivated
+-- run is also deactivated when window_open, door_open are detected as open=1, or if mc_test_mode is on=1
+-- AC is active when mux_temp (desired) is less than current_temp (real)
+-- fornace is active when mux_temp (desired) is greater than current temp (real)
+-- blower active when mux_temp = current temp (make sure checkingg for window/door/MC)
+-- door open os acyove of door_open sensor is ON as well as window opne and vacation on
+
+-- for energy monitor, there are 7 inputs and 10 outputs that we can focus on
+
+
+Entity Energy_monitor is port
+	(
+		vacation_mode			: in std_logic; -- activates LED and changes inc/dec/run			
+		MC_test_mode			: in std_logic; -- comparator testmode which deactivates run mode and blower
+		window_open				: in std_logic; -- activates LED and changes inc/dec/run 
+		door_open				: in std_logic; -- activates LED and changes inc/dec/run
+		AGTB						: in std_logic; -- activates LED furnace
+		AEQB						: in std_logic; -- activates LED blower
+		ALTB						: in std_logic; -- activates LED AC
+		
+		furnace					: out std_logic; --led 0
+		at_temp					: out std_logic; --led 1
+		AC							: out std_logic; --led 2
+		blower					: out std_logic; --led 3
+		window					: out std_logic; --led 4
+		door						: out std_logic; --led 5
+		vacation					: out std_logic; --led 7
+		run, increase, decrease : out std_logic; --run, increase, decrease outputs that connect to HVAC
+
+	);
+end Entity;
+
+	ARCHITECTURE one OF Energy_monitor IS
+	
+	Signal ud_bin_counter : unsigned(7 downto 0); -- declare signal to store counter output, and unsigned for only pos numbers
+
+Begin
+
+	if ( AEQB OR window_open OR door_open OR MC_test_mode= '1') then
+		run = '0'
+	elsif (ALTB = '1') then
+		AC = '1'
+		
+
+	
+	
+	
+	
+	
+	
+	COUNTER_BITS <= std_logic_vector (ud_bin_counter); --type cast unsigned binary number to logic vector
+	
+
+end;
